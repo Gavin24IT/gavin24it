@@ -1,209 +1,189 @@
-// Matrix Rain Effect
-const matrix = () => {
-    const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
-    
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = [];
-    
-    for (let x = 0; x < columns; x++) drops[x] = 1;
+:root {
+    --primary: #7DF9FF;
+    --secondary: #B19CD9;
+    --neon: #FF10F0;
+    --dark: #000000;
+    --space: #000C40;
+}
 
-    const draw = () => {
-        ctx.fillStyle = 'rgba(0, 16, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.fillStyle = '#0F0';
-        ctx.font = fontSize + 'px monospace';
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        drops.forEach((drop, i) => {
-            const text = chars[Math.floor(Math.random() * chars.length)];
-            ctx.fillText(text, i * fontSize, drop * fontSize);
-            
-            if (drop * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        });
-    };
+body {
+    background: linear-gradient(45deg, var(--dark) 25%, var(--space) 100%);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
 
-    setInterval(draw, 50);
-    window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    });
-};
+/* Planets */
+.space {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+}
 
-// Fake Hacked Effect (Intense Version)
-const triggerHackedEffect = (formData) => {
-    const body = document.body;
-    const container = document.querySelector('.container');
+.planet {
+    position: absolute;
+    animation: float 20s infinite ease-in-out;
+    filter: drop-shadow(0 0 20px var(--primary));
+    will-change: transform;
+    backface-visibility: hidden;
+}
 
-    // Hide the main content
-    container.style.display = "none";
+@keyframes float {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+    50% { transform: translate3d(0, -20px, 0) rotate(5deg); }
+}
 
-    // Create a hacked overlay
-    const hackedOverlay = document.createElement('div');
-    hackedOverlay.id = 'hacked-overlay';
-    hackedOverlay.style.position = 'fixed';
-    hackedOverlay.style.top = '0';
-    hackedOverlay.style.left = '0';
-    hackedOverlay.style.width = '100%';
-    hackedOverlay.style.height = '100%';
-    hackedOverlay.style.backgroundColor = 'black';
-    hackedOverlay.style.zIndex = '1000';
-    hackedOverlay.style.overflow = 'hidden';
-    hackedOverlay.style.color = 'red';
-    hackedOverlay.style.fontFamily = 'monospace';
-    hackedOverlay.style.fontSize = '1.5rem';
-    hackedOverlay.style.padding = '2rem';
-    hackedOverlay.style.whiteSpace = 'pre-wrap';
-    hackedOverlay.style.animation = 'glitch 0.1s infinite';
-    hackedOverlay.innerText = "INITIATING SYSTEM SCAN...\n\n";
-    body.appendChild(hackedOverlay);
+/* Mobile Planet Positioning */
+@media (max-width: 768px) {
+    .planet {
+        display: none; /* Hide planets on mobile */
+    }
+}
 
-    // Play Windows XP error sound continuously
-    const errorSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2993/2993-preview.mp3'); // Replace with Windows XP error sound URL
-    errorSound.loop = true; // Loop the sound
-    errorSound.play();
+/* Container */
+.container {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
 
-    // Fake error messages
-    const errorMessages = [
-        "ERROR: SYSTEM BREACH DETECTED",
-        "WARNING: UNAUTHORIZED ACCESS",
-        "CRITICAL: DATA CORRUPTION",
-        "ALERT: MALWARE INJECTION",
-        "FAILURE: NETWORK COMPROMISED",
-        "WARNING: FIREWALL BYPASSED",
-        "ERROR: ENCRYPTION FAILED",
-        "CRITICAL: BACKDOOR ACTIVATED",
-        "ALERT: DATA EXFILTRATION",
-        "FAILURE: SYSTEM SHUTDOWN IMMINENT"
-    ];
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 4rem 0 2rem;
+}
 
-    // Fake code injections
-    const fakeCode = [
-        "> Injecting payload: 0x7DF9FF...",
-        "> Exploiting vulnerability: CVE-2023-XXXX...",
-        "> Bypassing security protocols...",
-        "> Accessing root directory...",
-        "> Extracting sensitive data...",
-        "> Deploying ransomware...",
-        "> Overwriting system files...",
-        "> Establishing persistent backdoor..."
-    ];
+.welcome {
+    font-size: 2.5rem;
+    font-family: 'Orbitron', sans-serif;
+    margin-bottom: 1rem;
+    animation: fadeInUp 1s ease;
+}
 
-    // Generate fake errors and code injections
-    let errorCount = 0;
-    const errorInterval = setInterval(() => {
-        const randomError = errorMessages[Math.floor(Math.random() * errorMessages.length)];
-        const randomCode = fakeCode[Math.floor(Math.random() * fakeCode.length)];
-        hackedOverlay.innerText += `> ${randomError}\n`;
-        hackedOverlay.innerText += `${randomCode}\n\n`;
-        errorCount++;
+.welcome span {
+    background: linear-gradient(45deg, var(--primary), var(--neon));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-        // Scroll to bottom
-        hackedOverlay.scrollTop = hackedOverlay.scrollHeight;
+.tagline {
+    font-size: 1.2rem;
+    color: var(--secondary);
+}
 
-        // Add random glitch effect
-        if (errorCount % 5 === 0) {
-            hackedOverlay.style.animation = 'none';
-            setTimeout(() => {
-                hackedOverlay.style.animation = 'glitch 0.1s infinite';
-            }, 100);
-        }
+/* Sections */
+.section {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    border: 2px solid rgba(125, 249, 255, 0.2);
+    border-radius: 20px;
+    background: rgba(0, 0, 30, 0.5);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s;
+}
 
-        // Stop after 5 seconds
-        if (errorCount > 30) {
-            clearInterval(errorInterval);
-            hackedOverlay.innerText += "\n\n> SYSTEM COMPROMISED: YOU'VE BEEN HACKED!\n";
-            hackedOverlay.innerText += "> INITIATING EMERGENCY SHUTDOWN...\n";
+h2 {
+    color: var(--primary);
+    font-family: 'Orbitron', sans-serif;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary);
+}
 
-            // Countdown to shutdown
-            let countdown = 3;
-            const countdownInterval = setInterval(() => {
-                hackedOverlay.innerText += `> SHUTDOWN IN: ${countdown}...\n`;
-                hackedOverlay.scrollTop = hackedOverlay.scrollHeight;
-                countdown--;
+/* Skills Grid */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
 
-                if (countdown < 0) {
-                    clearInterval(countdownInterval);
-                    hackedOverlay.innerText += "> SHUTDOWN COMPLETE.\n";
-                    hackedOverlay.innerText += "> ALL DATA HAS BEEN EXFILTRATED.\n";
+.skill-card {
+    padding: 1rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(125, 249, 255, 0.1);
+}
 
-                    // Stop the error sound
-                    errorSound.pause();
+/* Timeline */
+.timeline {
+    position: relative;
+    padding-left: 1rem;
+    border-left: 2px solid var(--primary);
+}
 
-                    // Reset after 3 seconds
-                    setTimeout(() => {
-                        body.removeChild(hackedOverlay);
-                        container.style.display = "block";
-                        alert("Just kidding! Your data is safe. 😉");
+.timeline-item {
+    position: relative;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+}
 
-                        // Submit the form data to Formspree
-                        fetch('https://formspree.io/f/mbldydjv', {
-                            method: 'POST',
-                            body: formData,
-                            headers: {
-                                'Accept': 'application/json'
-                            }
-                        })
-                        .then(response => {
-                            if (response.ok) {
-                                console.log('Form submitted successfully');
-                            } else {
-                                console.error('Form submission failed');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
+/* Contact Form */
+.contact-form {
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
 
-                    }, 3000);
-                }
-            }, 1000);
-        }
-    }, 200); // Add a new error every 200ms
-};
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(125, 249, 255, 0.2);
+    color: white;
+    border-radius: 8px;
+}
 
-// Initialize all effects
-document.addEventListener('DOMContentLoaded', () => {
-    // Start matrix rain
-    matrix();
+.submit-btn {
+    background: var(--primary);
+    color: var(--dark);
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
 
-    // Add event listener to the form submit button
-    document.querySelector('.cyber-form').addEventListener('submit', (e) => {
-        e.preventDefault(); // Prevent actual form submission
-        const formData = new FormData(e.target); // Capture form data
-        triggerHackedEffect(formData); // Trigger the hacked effect
-    });
+.submit-btn:hover {
+    transform: translateY(-3px);
+}
 
-    // Glitch effect for headers
-    document.querySelectorAll('.glitch').forEach(element => {
-        element.addEventListener('mouseover', () => {
-            element.style.animation = 'glitch 0.3s infinite';
-        });
-        
-        element.addEventListener('mouseout', () => {
-            element.style.animation = 'glitch 3s infinite';
-        });
-    });
+/* Animations */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* Portfolio Button */
+.portfolio-btn {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.8rem 2rem;
+    background: linear-gradient(45deg, var(--primary), var(--neon));
+    color: var(--dark);
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(125, 249, 255, 0.3);
+}
 
-    // Terminal typing effect
-    document.querySelectorAll('.terminal-text').forEach(element => {
-        const text = element.innerText;
-        element.innerHTML = '';
-        
-        let i = 0;
-        const typeWriter = () => {
-            if (i < text.length) {
-                element.innerHTML += text.charAt(i);
-                i++;
-                setTimeout(typeWriter, 50);
-            }
-        }
-        typeWriter();
-    });
-});
+.portfolio-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(125, 249, 255, 0.5);
+}
