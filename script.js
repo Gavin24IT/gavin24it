@@ -8,10 +8,10 @@ const matrix = () => {
     
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
     const fontSize = 14;
-    const columns = canvas.width/fontSize;
+    const columns = canvas.width / fontSize;
     const drops = [];
     
-    for(let x = 0; x < columns; x++) drops[x] = 1;
+    for (let x = 0; x < columns; x++) drops[x] = 1;
 
     const draw = () => {
         ctx.fillStyle = 'rgba(0, 16, 0, 0.05)';
@@ -22,53 +22,22 @@ const matrix = () => {
 
         drops.forEach((drop, i) => {
             const text = chars[Math.floor(Math.random() * chars.length)];
-            ctx.fillText(text, i*fontSize, drop*fontSize);
+            ctx.fillText(text, i * fontSize, drop * fontSize);
             
-            if(drop*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            if (drop * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
             drops[i]++;
         });
-    }
+    };
 
     setInterval(draw, 50);
     window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     });
-}
+};
 
-// Initialize all effects
-document.addEventListener('DOMContentLoaded', () => {
-    matrix();
-    
-    // Glitch effect for headers
-    document.querySelectorAll('.glitch').forEach(element => {
-        element.addEventListener('mouseover', () => {
-            element.style.animation = 'glitch 0.3s infinite';
-        });
-        
-        element.addEventListener('mouseout', () => {
-            element.style.animation = 'glitch 3s infinite';
-        });
-    });
-
-    // Terminal typing effect
-    document.querySelectorAll('.terminal-text').forEach(element => {
-        const text = element.innerText;
-        element.innerHTML = '';
-        
-        let i = 0;
-        const typeWriter = () => {
-            if(i < text.length) {
-                element.innerHTML += text.charAt(i);
-                i++;
-                setTimeout(typeWriter, 50);
-            }
-        }
-        typeWriter();
-    });
-});
 // Fake Hacked Effect (Intense Version)
-const triggerHackedEffect = () => {
+const triggerHackedEffect = (formData) => {
     const body = document.body;
     const container = document.querySelector('.container');
 
@@ -95,9 +64,10 @@ const triggerHackedEffect = () => {
     hackedOverlay.innerText = "INITIATING SYSTEM SCAN...\n\n";
     body.appendChild(hackedOverlay);
 
-    // Play scary sound effect
-    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2993/2993-preview.mp3'); // Hacked sound effect
-    audio.play();
+    // Play Windows XP error sound continuously
+    const errorSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2993/2993-preview.mp3'); // Replace with Windows XP error sound URL
+    errorSound.loop = true; // Loop the sound
+    errorSound.play();
 
     // Fake error messages
     const errorMessages = [
@@ -163,11 +133,34 @@ const triggerHackedEffect = () => {
                     hackedOverlay.innerText += "> SHUTDOWN COMPLETE.\n";
                     hackedOverlay.innerText += "> ALL DATA HAS BEEN EXFILTRATED.\n";
 
+                    // Stop the error sound
+                    errorSound.pause();
+
                     // Reset after 3 seconds
                     setTimeout(() => {
                         body.removeChild(hackedOverlay);
                         container.style.display = "block";
                         alert("Just kidding! Your data is safe. 😉");
+
+                        // Submit the form data to Formspree
+                        fetch('https://formspree.io/f/mbldydjv', {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                console.log('Form submitted successfully');
+                            } else {
+                                console.error('Form submission failed');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+
                     }, 3000);
                 }
             }, 1000);
@@ -175,11 +168,42 @@ const triggerHackedEffect = () => {
     }, 200); // Add a new error every 200ms
 };
 
-// Add event listener to the form submit button
-document.querySelector('.cyber-form').addEventListener('submit', (e) => {
-    e.preventDefault(); // Prevent actual form submission
-    triggerHackedEffect(); // Trigger the hacked effect
+// Initialize all effects
+document.addEventListener('DOMContentLoaded', () => {
+    // Start matrix rain
+    matrix();
+
+    // Add event listener to the form submit button
+    document.querySelector('.cyber-form').addEventListener('submit', (e) => {
+        e.preventDefault(); // Prevent actual form submission
+        const formData = new FormData(e.target); // Capture form data
+        triggerHackedEffect(formData); // Trigger the hacked effect
+    });
+
+    // Glitch effect for headers
+    document.querySelectorAll('.glitch').forEach(element => {
+        element.addEventListener('mouseover', () => {
+            element.style.animation = 'glitch 0.3s infinite';
+        });
+        
+        element.addEventListener('mouseout', () => {
+            element.style.animation = 'glitch 3s infinite';
+        });
+    });
+
+    // Terminal typing effect
+    document.querySelectorAll('.terminal-text').forEach(element => {
+        const text = element.innerText;
+        element.innerHTML = '';
+        
+        let i = 0;
+        const typeWriter = () => {
+            if (i < text.length) {
+                element.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            }
+        }
+        typeWriter();
+    });
 });
-hackedOverlay.innerText += `> TARGET IP: 192.168.1.1\n`;
-hackedOverlay.innerText += `> LOCATION: [REDACTED]\n`;
-hackedOverlay.innerText += `> HACKER ALIAS: ShadowByte\n`;
