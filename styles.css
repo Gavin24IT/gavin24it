@@ -1,269 +1,45 @@
-:root {
-    --matrix-green: #00ff00;
-    --cyber-blue: #00f3ff;
-    --neon-pink: #ff00ff;
-    --hacker-bg: #001000;
-    --terminal-bg: rgba(0, 20, 0, 0.95);
-}
+// Scroll Handler for Planets
+const scrollController = {
+    lastScroll: 0,
+    ticking: false,
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    handleScroll: function() {
+        this.lastScroll = window.pageYOffset;
 
-body {
-    background: var(--hacker-bg);
-    color: var(--matrix-green);
-    font-family: 'Source Code Pro', monospace;
-    line-height: 1.6;
-    overflow-x: hidden;
-}
+        if (!this.ticking) {
+            window.requestAnimationFrame(() => {
+                this.updatePlanets(this.lastScroll);
+                this.ticking = false;
+            });
+            this.ticking = true;
+        }
+    },
 
-#matrix {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    opacity: 0.15;
-}
+    updatePlanets: function(scrolled) {
+        const planets = {
+            mercury: { speed: 0.1, rotation: 0.05 },
+            venus: { speed: 0.15, rotation: -0.07 },
+            earth: { speed: 0.2, rotation: 0.1 },
+            mars: { speed: 0.25, rotation: -0.12 },
+            jupiter: { speed: 0.3, rotation: 0.15 },
+            saturn: { speed: 0.35, rotation: -0.18 },
+            uranus: { speed: 0.4, rotation: 0.2 },
+            neptune: { speed: 0.45, rotation: -0.22 }
+        };
 
-/* Header Styles */
-.terminal-header {
-    padding: 2rem 0;
-    border-bottom: 2px solid var(--matrix-green);
-    text-shadow: 0 0 10px var(--matrix-green);
-}
-
-.cyber-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-    animation: glitch 3s infinite;
-}
-
-.cyber-subtitle {
-    color: var(--cyber-blue);
-    font-size: 1.2rem;
-}
-
-/* Cyber Card */
-.cyber-card {
-    background: var(--terminal-bg);
-    border: 1px solid var(--matrix-green);
-    margin: 2rem 0;
-    padding: 1.5rem;
-    position: relative;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
-}
-
-.cyber-card::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, 
-        var(--matrix-green), 
-        var(--cyber-blue), 
-        var(--neon-pink));
-    z-index: -1;
-    animation: borderGlow 3s infinite;
-}
-
-/* Skills Grid */
-.skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1rem;
-}
-
-.skill-module {
-    border: 1px solid rgba(0, 255, 0, 0.2);
-    padding: 1rem;
-    border-radius: 5px;
-}
-
-.module-title {
-    color: var(--neon-pink);
-    margin-bottom: 0.5rem;
-    font-family: 'Orbitron', sans-serif;
-}
-
-/* Timeline */
-.timeline {
-    border-left: 2px solid var(--matrix-green);
-    padding-left: 1.5rem;
-    margin-top: 1rem;
-}
-
-.log-entry {
-    position: relative;
-    margin-bottom: 2rem;
-    padding: 1rem;
-    background: rgba(0, 255, 0, 0.05);
-}
-
-.log-date {
-    color: var(--cyber-blue);
-    font-size: 0.9rem;
-}
-
-.log-title {
-    color: var(--matrix-green);
-    margin: 0.5rem 0;
-}
-
-.log-company {
-    color: var(--neon-pink);
-    font-size: 0.9rem;
-}
-
-/* Contact Form */
-.cyber-form {
-    margin-top: 1.5rem;
-}
-
-.input-group {
-    position: relative;
-    margin-bottom: 1.5rem;
-}
-
-.cyber-input {
-    background: transparent;
-    border: 1px solid var(--matrix-green);
-    color: var(--matrix-green);
-    padding: 0.8rem;
-    width: 100%;
-    font-family: 'Source Code Pro', monospace;
-    transition: all 0.3s;
-}
-
-.input-border {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--neon-pink);
-    transition: width 0.3s ease;
-}
-
-.cyber-input:focus ~ .input-border {
-    width: 100%;
-}
-
-.cyber-button {
-    background: black;
-    border: 2px solid var(--matrix-green);
-    color: var(--matrix-green);
-    padding: 1rem 2rem;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-top: 1rem;
-}
-
-.cyber-button:hover {
-    background: var(--matrix-green);
-    color: black;
-}
-
-/* Animations */
-@keyframes glitch {
-    0% { transform: translate(0); }
-    20% { transform: translate(-2px, 2px); }
-    40% { transform: translate(-2px, -2px); }
-    60% { transform: translate(2px, 2px); }
-    80% { transform: translate(2px, -2px); }
-    100% { transform: translate(0); }
-}
-
-@keyframes borderGlow {
-    0% { opacity: 0.5; }
-    50% { opacity: 1; }
-    100% { opacity: 0.5; }
-}
-
-.blink {
-    animation: blink 1s infinite;
-}
-
-@keyframes blink {
-    50% { opacity: 0; }
-}
-
-.scanline {
-    height: 1px;
-    background: rgba(0, 255, 0, 0.3);
-    margin: 1rem 0;
-    position: relative;
-    animation: scan 5s linear infinite;
-}
-
-@keyframes scan {
-    0% { top: 0; }
-    50% { top: 100%; }
-    100% { top: 0; }
-}
-
-@media (max-width: 768px) {
-    .cyber-title {
-        font-size: 1.8rem;
+        Object.keys(planets).forEach(planetId => {
+            const planet = document.getElementById(planetId);
+            if (planet) {
+                const { speed, rotation } = planets[planetId];
+                planet.style.transform =
+                    `translate3d(0, ${scrolled * speed}px, 0)
+                     rotate(${scrolled * rotation}deg)`;
+            }
+        });
     }
-    
-    .skills-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .cyber-card {
-        padding: 1rem;
-    }
-}
-@keyframes glitch {
-    0% { transform: translate(0); }
-    20% { transform: translate(-2px, 2px); }
-    40% { transform: translate(-2px, -2px); }
-    60% { transform: translate(2px, 2px); }
-    80% { transform: translate(2px, -2px); }
-    100% { transform: translate(0); }
-}
+};
 
-.hacked-overlay {
-    animation: glitch 0.1s infinite;
-}
-/* Glitch Animation */
-@keyframes glitch {
-    0% { transform: translate(0); }
-    20% { transform: translate(-2px, 2px); }
-    40% { transform: translate(-2px, -2px); }
-    60% { transform: translate(2px, 2px); }
-    80% { transform: translate(2px, -2px); }
-    100% { transform: translate(0); }
-}
-
-/* Hacked Overlay */
-#hacked-overlay {
-    animation: glitch 0.1s infinite;
-    background: linear-gradient(45deg, rgba(255, 0, 0, 0.1), rgba(0, 0, 0, 0.9));
-    border: 2px solid red;
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-}
-
-/* Terminal Text */
-.terminal-text {
-    color: red;
-    text-shadow: 0 0 5px rgba(255, 0, 0, 0.8);
-}
-@keyframes flicker {
-    0% { opacity: 1; }
-    50% { opacity: 0.2; }
-    100% { opacity: 1; }
-}
-
-#hacked-overlay {
-    animation: glitch 0.1s infinite, flicker 0.5s infinite;
-}
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('scroll', () => scrollController.handleScroll());
+});
